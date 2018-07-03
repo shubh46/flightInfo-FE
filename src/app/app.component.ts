@@ -36,16 +36,29 @@ export class AppComponent implements OnInit {
   myRadio: any;
   returnDate: any;
   preferedAir: any;
+  noOfPassnegers:any;
+  class:any;
 
   constructor(private ds: DataService, private datePipe: DatePipe) {
     this.destination = '';
     this.source = '';
     this.date = '';
     this.loading = false;
+    this.noOfPassnegers = 1;
     this.originCode = '';
     this.destCode = '';
-    this.preferedAir = "all";
+    this.preferedAir = "E";
     this.minTravelDate = this.getDate(new Date());
+    this.class = [
+      {
+        key:'E',
+        class:'Economy'
+      },
+      {
+        key:'B',
+        class:'Business'
+      }
+    ]
     this.airLines = {
       "AI": 'Air India',
       "9W": 'Jet Airways',
@@ -311,7 +324,7 @@ export class AppComponent implements OnInit {
       origin: source,
       dest: destination,
       originDate: this.finaldate,
-      option: this.option,
+      travellers: this.noOfPassnegers,
       prefer: this.preferedAir
     }
     this.get(obj);
@@ -339,6 +352,8 @@ export class AppComponent implements OnInit {
   }
   opt(e) {
     this.preferedAir = e.target.value;
+    console.log(this.preferedAir);
+    
   }
 
 
