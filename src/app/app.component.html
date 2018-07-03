@@ -41,7 +41,7 @@
                         <input name="group1" type="radio" value="multiCity" id="1" checked/>
                         <span style="color:black">Multi City</span>
                       </label>
-                      <label>&nbsp;
+                      <label>
                         <input name="group1" type="radio" id="2" value="nonStop">
                         <span style="color:black">Non Stop</span>
                       </label>
@@ -59,6 +59,18 @@
       </div>
       <a *ngIf="flag" class="waves-effect waves-light btn" (click)="download()">export as csv</a>
     </div>
+
+
+    <div class="row">
+      <div class="col s12 m12">
+        <div class="card-panel teal">
+    
+        </div>
+      </div>
+    </div>
+            
+
+
     <div *ngIf="flag" class="container" style="max-width:1000px;margin:20px auto;">
       <div class="table_outer">
         <table class="responsive_tables">
