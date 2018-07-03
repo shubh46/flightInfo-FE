@@ -1,20 +1,129 @@
-<!--The content below is only a placeholder and can be replaced.-->
-<div style="text-align:center">
-  <h1>
-    Welcome to {{ title }}!
-  </h1>
-  <img width="300" alt="Angular Logo" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTAgMjUwIj4KICAgIDxwYXRoIGZpbGw9IiNERDAwMzEiIGQ9Ik0xMjUgMzBMMzEuOSA2My4ybDE0LjIgMTIzLjFMMTI1IDIzMGw3OC45LTQzLjcgMTQuMi0xMjMuMXoiIC8+CiAgICA8cGF0aCBmaWxsPSIjQzMwMDJGIiBkPSJNMTI1IDMwdjIyLjItLjFWMjMwbDc4LjktNDMuNyAxNC4yLTEyMy4xTDEyNSAzMHoiIC8+CiAgICA8cGF0aCAgZmlsbD0iI0ZGRkZGRiIgZD0iTTEyNSA1Mi4xTDY2LjggMTgyLjZoMjEuN2wxMS43LTI5LjJoNDkuNGwxMS43IDI5LjJIMTgzTDEyNSA1Mi4xem0xNyA4My4zaC0zNGwxNy00MC45IDE3IDQwLjl6IiAvPgogIDwvc3ZnPg==">
-</div>
-<h2>Here are some links to help you start: </h2>
-<ul>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://angular.io/tutorial">Tour of Heroes</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://github.com/angular/angular-cli/wiki">CLI Documentation</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://blog.angular.io/">Angular blog</a></h2>
-  </li>
-</ul>
-
+<div class="main">
+  <div class="outer_signin_signup">
+    <div class="container">
+      <div class="">
+        <div class="col m12 s12">
+          <div class="signup_right change">
+            <h5 style="text-align: center;font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif">Plan Your Flights</h5>
+            <div class="custom-overlay active" *ngIf="loading"></div>
+            <div *ngIf="loading" class="spinner">
+              <div class="bounce1"></div>
+              <div class="bounce2"></div>
+              <div class="bounce3"></div>
+            </div>
+            <div class="signup_form_inner">
+              <form class="form-horizontal">
+                <div class="row">
+                  <div class="outer_position col s12 change">
+                    <h5 class="head">Source</h5>
+                    <input type="text" [(ngModel)]="source_name" name="src" id="inputSource" placeholder="From: City or Airport">
+                  </div>
+                  <div class="outer_position col s12">
+                    <h5>Destination</h5>
+                    <input type="text" [(ngModel)]="dest_name" name="dest" id="inputDest" placeholder="To: City or Airport">
+                  </div>
+                  <div class="outer_position col s12">
+                    <h5>Departure Date</h5>
+                    <input id="fromDate" type="text" class="datepicker">
+                  </div>
+                  <div class="outer_position col s12">
+                    <h5>Prefered AirLine</h5>
+                    <select class="browser-default " id="flights" (change)="opt($event)">
+                      <option value="all">All </option>
+                      <optgroup *ngFor="let air of airDropDown">
+                        <option value="{{air?.code}}">{{air?.name}}</option>
+                      </optgroup>
+                    </select>
+                  </div>
+                  <div>
+                    <div class="col s6 form">
+                      <label><br>
+                        <input name="group1" type="radio" value="multiCity" id="1" checked/>
+                        <span style="color:black">Multi City</span>
+                      </label>
+                      <label>&nbsp;
+                        <input name="group1" type="radio" id="2" value="nonStop">
+                        <span style="color:black">Non Stop</span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+                <div class="outer_position">
+                  <button type="reset" class="btn btn1 btn-danger">Reset</button>
+                  <button type="submit" class="btn btn2 btn-primary" (click)="onSubmit()">Submit</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <a *ngIf="flag" class="waves-effect waves-light btn" (click)="download()">export as csv</a>
+    </div>
+    <div *ngIf="flag" class="container" style="max-width:1000px;margin:20px auto;">
+      <div class="table_outer">
+        <table class="responsive_tables">
+          <thead>
+            <tr>
+              <th>AirLine Name</th>
+              <th>Flight Code</th>
+              <th>Source</th>
+              <th>Destination</th>
+              <th>Fare</th>
+              <th>Tax</th>
+              <th>Total Price</th>
+              <th>Departure Date</th>
+              <th>Departure Time</th>
+              <th>Arrival Time</th>
+              <th>Travel Duration</th>
+              <th>Flight Type</th>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngFor="let i of totalRecord">
+              <tr>
+                <td>
+                  {{airLines[i.itineraries[0].outbound.flights[0].operating_airline]}}({{i.itineraries[0].outbound.flights[0].operating_airline}})
+                </td>
+                <td>
+                  {{i.itineraries[0].outbound.flights[0].flight_number}}
+                </td>
+                <td>
+                  {{source}}
+                </td>
+                <td>
+                  {{destination}}
+                </td>
+                <td>
+                  ₹{{i.fare.price_per_adult.total_fare}}
+                </td>
+                <td>
+                  ₹{{i.fare.price_per_adult.tax}}
+                </td>
+                <td>
+                  ₹{{totalPrice(i)}}
+                </td>
+                <td>
+                  {{i.itineraries[0].outbound.flights[0].departs_at[0]}}
+                </td>
+                <td>
+                  {{i.itineraries[0].outbound.flights[0].departs_at[1]}}
+                </td>
+                <td>
+                  {{i.itineraries[0].outbound.flights[0].arrives_at[1]}}
+                </td>
+                <td>
+                  {{i.itineraries[0].outbound.duration}} Hrs
+                </td>
+                <td>
+                  {{ i.itineraries[0].outbound.flights.length>1 ? 'Multi City' : 'Non Stop' }}
+                </td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
+        <div>
+        </div>
+        <br>
+      </div>
+    </div>
+  </div>
