@@ -256,41 +256,29 @@ export class AppComponent implements OnInit {
         this.flag = true;
         this.source = this.toTitleCase(this.source_name);
         this.destination = this.toTitleCase(this.dest_name);
-        this.totalRecord = d.data.results;
-
-        for (var tr = 0; tr < this.totalRecord.length; tr++) {
-
-          let fare2 = this.totalRecord[tr].fare.price_per_adult.total_fare;
-          let tax1 = this.totalRecord[tr].fare.price_per_adult.tax;
-          let total = parseFloat(fare2) + parseFloat(tax1);
-          for (var it = 0; it < 1; it++) {
-            let check1 = this.totalRecord[tr].itineraries[it].outbound.duration;
-            for (var ob = 0; ob < 1; ob++) {
-              this.totalRecord[tr].itineraries[it].outbound.flights[ob].departs_at = this.totalRecord[tr].itineraries[it].outbound.flights[ob].departs_at.split('T');
-              this.totalRecord[tr].itineraries[it].outbound.flights[ob].arrives_at = this.totalRecord[tr].itineraries[it].outbound.flights[ob].arrives_at.split('T');
-              let obj1 = {
-                airline: this.totalRecord[tr].itineraries[it].outbound.flights[ob].operating_airline,
-                flightCode: this.totalRecord[tr].itineraries[it].outbound.flights[ob].flight_number,
-                source: this.source,
-                dest: this.destination,
-                fare: fare2,
-                tax: tax1,
-                final: total,
-                departureDate: this.totalRecord[tr].itineraries[it].outbound.flights[ob].departs_at[0],
-                departureTime: this.totalRecord[tr].itineraries[it].outbound.flights[ob].departs_at[1],
-                duration: check1
-              }
-              this.csvObj.push(obj1);
-            }
+        this.totalRecord = d.data.data.onwardflights;  
+        this.totalRecord.forEach(element => {
+          element.depdate = element.depdate.split('t');
+         
+          
+          let obj1 = {
+            airline: element.airline,
+            flightCode:element.flightcode,
+            source: this.source,
+            dest: this.destination,
+            fare: element.fare.totalbasefare,
+            final: element.fare.grossamount,
+            departureDate: element.depdate[0],
+            departureTime: element.deptime,
+            duration: element.duration,
+            flightType: element.stops>0 ? "Multi Ciyt" : "Non Stop",
+            Warning:element.warnings
           }
+          this.csvObj.push(obj1)
 
 
-        }
-
-        this.source = this.toTitleCase(this.source_name);
-        this.destination = this.toTitleCase(this.dest_name);
-        this.totalRecord = d.data.results;
-        // console.log(this.totalRecord);
+        });
+        
       }
       else {
         this.loading = false;
@@ -298,9 +286,7 @@ export class AppComponent implements OnInit {
       }
     });
   }
-
-
-
+  
   onSubmit() {
     let date = $('#fromDate').val();
     if ($('#1').prop('checked')) {
@@ -345,7 +331,7 @@ export class AppComponent implements OnInit {
       decimalseparator: '.',
       showLabels: true,
       showTitle: true,
-      headers: ['AirLine Code', 'Flight Code', 'Source', 'Destination', 'Fare', 'Tax', 'Total', 'Depar. Date', 'Depar. Time', 'Travel Duration']
+      headers: ['AirLine Code', 'Flight Code', 'Source', 'Destination', 'Fare', 'Total', 'Depar. Date', 'Depar. Time', 'Travel Duration','Flight Type','Warning']
     };
 
     new Angular2Csv(this.csvObj, 'My Report', options);
