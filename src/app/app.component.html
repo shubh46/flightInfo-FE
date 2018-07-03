@@ -26,7 +26,7 @@
                     <h5>Departure Date</h5>
                     <input id="fromDate" type="text" class="datepicker">
                   </div>
-                  <div class="outer_position col s12">
+                  <!-- <div class="outer_position col s12">
                     <h5>Prefered AirLine</h5>
                     <select class="browser-default " id="flights" (change)="opt($event)">
                       <option value="all">All </option>
@@ -34,8 +34,8 @@
                         <option value="{{air?.code}}">{{air?.name}}</option>
                       </optgroup>
                     </select>
-                  </div>
-                  <div>
+                  </div> -->
+                  <!-- <div>
                     <div class="col s6 form">
                       <label><br>
                         <input name="group1" type="radio" value="multiCity" id="1" checked/>
@@ -46,7 +46,7 @@
                         <span style="color:black">Non Stop</span>
                       </label>
                     </div>
-                  </div>
+                  </div> -->
                 </div>
                 <div class="outer_position">
                   <button type="reset" class="btn btn1 btn-danger">Reset</button>
@@ -73,7 +73,7 @@
 
     <div *ngIf="flag" class="container" style="max-width:1000px;margin:20px auto;">
       <div class="table_outer">
-        <table class="responsive_tables">
+        <table class="responsive_tables" style="background-color: rgb(242, 246, 248)">
           <thead>
             <tr>
               <th>AirLine Name</th>
@@ -85,19 +85,19 @@
               <th>Total Price</th>
               <th>Departure Date</th>
               <th>Departure Time</th>
-              <th>Arrival Time</th>
               <th>Travel Duration</th>
               <th>Flight Type</th>
+              <th>Warnings</th>
             </tr>
           </thead>
           <tbody>
             <ng-container *ngFor="let i of totalRecord">
               <tr>
                 <td>
-                  {{airLines[i.itineraries[0].outbound.flights[0].operating_airline]}}({{i.itineraries[0].outbound.flights[0].operating_airline}})
+                  {{i?.airline}} ({{i?.carrierid}})
                 </td>
                 <td>
-                  {{i.itineraries[0].outbound.flights[0].flight_number}}
+                {{i?.flightcode}}
                 </td>
                 <td>
                   {{source}}
@@ -106,28 +106,28 @@
                   {{destination}}
                 </td>
                 <td>
-                  ₹{{i.fare.price_per_adult.total_fare}}
+                  ₹{{i?.fare?.totalbasefare}}
                 </td>
                 <td>
-                  ₹{{i.fare.price_per_adult.tax}}
+                  ₹{{i?.fare?.totaltaxes}}
                 </td>
                 <td>
-                  ₹{{totalPrice(i)}}
+                  ₹{{i?.fare?.grossamount}}
                 </td>
                 <td>
-                  {{i.itineraries[0].outbound.flights[0].departs_at[0]}}
+                  {{i?.depdate[0]}}
                 </td>
                 <td>
-                  {{i.itineraries[0].outbound.flights[0].departs_at[1]}}
+                  {{i?.deptime}}
                 </td>
                 <td>
-                  {{i.itineraries[0].outbound.flights[0].arrives_at[1]}}
+                  {{i?.duration}}
                 </td>
                 <td>
-                  {{i.itineraries[0].outbound.duration}} Hrs
+                  {{i?.stops>0 ? "Multi City":"Non Stop"}}
                 </td>
                 <td>
-                  {{ i.itineraries[0].outbound.flights.length>1 ? 'Multi City' : 'Non Stop' }}
+                  {{i?.warnings}}
                 </td>
               </tr>
             </ng-container>
